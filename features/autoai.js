@@ -211,47 +211,37 @@ export default async (context) => {
 
         const isGroup = !!m.isGroup;
 
-        if (isGroup) {
-            const _rawBotId = client.user?.id || botNumber || '';
-            const botNum = _rawBotId.split('@')[0].split(':')[0];
-            const botLid = (client.user?.lid || '').split('@')[0].split(':')[0];
-            const bodyStr = m.body || m.text || '';
-            const _allMentioned = [
-                ...(m.mentionedJid || []),
-                ...(m.msg?.contextInfo?.mentionedJid || []),
-                ...(m.message?.extendedTextMessage?.contextInfo?.mentionedJid || []),
-                ...(m.message?.imageMessage?.contextInfo?.mentionedJid || []),
-                ...(m.message?.videoMessage?.contextInfo?.mentionedJid || []),
-            ];
-            const _numMatch = (j) => {
-                const jk = (j || '').split('@')[0].split(':')[0];
-                return (botNum && jk === botNum) || (botLid && jk === botLid);
-            };
-            const isMentionedInBody = (botNum.length > 4 && bodyStr.includes('@' + botNum)) ||
-                (botLid.length > 4 && bodyStr.includes('@' + botLid));
-            const isMentionedInList = _allMentioned.some(_numMatch);
-            const isMentioned = isMentionedInBody || isMentionedInList;
-            const _qCtx = (() => {
-                const _raw = m.message || {};
-                for (const [, _mo] of Object.entries(_raw)) {
-                    if (_mo && typeof _mo === 'object') {
-                        const ctx = _mo.contextInfo;
-                        if (ctx?.participant) return ctx.participant;
-                        if (ctx?.remoteJid && ctx?.quotedMessage) return ctx.remoteJid;
-                    }
+        const _rawBotId = client.user?.id || botNumber || '';
+        const botNum = _rawBotId.split('@')[0].split(':')[0];
+        const botLid = (client.user?.lid || '').split('@')[0].split(':')[0];
+        const bodyStr = m.body || m.text || '';
+        const _allMentioned = [
+            ...(m.mentionedJid || []),
+            ...(m.msg?.contextInfo?.mentionedJid || []),
+            ...(m.message?.extendedTextMessage?.contextInfo?.mentionedJid || []),
+            ...(m.message?.imageMessage?.contextInfo?.mentionedJid || []),
+            ...(m.message?.videoMessage?.contextInfo?.mentionedJid || []),
+        ];
+        const _numMatch = (j) => {
+            const jk = (j || '').split('@')[0].split(':')[0];
+            return (botNum && jk === botNum) || (botLid && jk === botLid);
+        };
+        const isMentioned = (botNum.length > 4 && bodyStr.includes('@' + botNum)) ||
+            (botLid.length > 4 && bodyStr.includes('@' + botLid)) ||
+            _allMentioned.some(_numMatch);
+        const _qCtx = (() => {
+            const _raw = m.message || {};
+            for (const [, _mo] of Object.entries(_raw)) {
+                if (_mo && typeof _mo === 'object') {
+                    const ctx = _mo.contextInfo;
+                    if (ctx?.participant) return ctx.participant;
+                    if (ctx?.remoteJid && ctx?.quotedMessage) return ctx.remoteJid;
                 }
-                return m.quoted?.sender || m.msg?.contextInfo?.participant || '';
-            })();
-            const isReplyToBot = _numMatch(_qCtx);
-            if (!isMentioned && !isReplyToBot) {
-                return;
             }
-        } else {
-            const _dmOk = remoteJid?.endsWith('@s.whatsapp.net') || remoteJid?.endsWith('@lid');
-            if (!_dmOk) {
-                return;
-            }
-        }
+            return m.quoted?.sender || m.msg?.contextInfo?.participant || '';
+        })();
+        const isReplyToBot = _numMatch(_qCtx);
+        if (!isMentioned && !isReplyToBot) return;
 
         const rawMsg = m.message;
         const _META_KEYS = new Set(['messageContextInfo','senderKeyDistributionMessage','messageSecret']);

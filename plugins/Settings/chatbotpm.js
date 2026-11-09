@@ -7,7 +7,7 @@ import { sendInteractive } from '../../lib/sendInteractive.js';
 export default {
   name: 'chatbotpm',
   aliases: ['chatbot', 'autoreply'],
-  description: 'تشغيل أو إيقاف الردود التلقائية بالذكاء الاصطناعي — يرد على جميع الرسائل الخاصة، وعند الإشارة إليه أو الرد عليه في المجموعات',
+  description: 'تشغيل أو إيقاف الردود التلقائية بالذكاء الاصطناعي — لا يرد إلا عند الإشارة إليه أو الرد على إحدى رسائله',
   run: async (context) => {
     await ownerMiddleware(context, async () => {
       const { client, m, args, prefix } = context;
@@ -34,7 +34,7 @@ ${body}\n╰───────────────\n> ©𝐏𝐨𝐰𝐞�
           await client.sendMessage(m.chat, { react: { text: '✅', key: m.reactKey } });
           return client.sendMessage(m.chat, {
             text: fmt('AUTO AI', newState
-              ? ['الحالة: ✅ مفعّل', 'Replies to all DMs + @mentions in groups.', 'الله يعينهم 😒']
+              ? ['الحالة: ✅ مفعّل', 'Replies only to @mentions or replies to the bot.', 'الله يعينهم 😒']
               : ['الحالة: ❌ متوقف', 'Silent mode. Finally.'])
           });
         }
