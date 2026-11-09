@@ -1,0 +1,61 @@
+{
+  "name": "Toxic-MD",
+  "description": "بوت واتساب سريع وحديث متعدد الأجهزة مبني على Node.js وBaileys، باللغة العربية الفصحى.",
+  "website": "https://github.com/xhclintohn/Toxic-MD#readme",
+  "repository": "https://github.com/xhclintohn/Toxic-MD.git",
+  "logo": "https://raw.githubusercontent.com/xhclintohn/Music-Clips-Collection/main/images/toxicx.png",
+  "success_url": "/",
+  "keywords": [
+    "whatsapp-bot",
+    "baileys",
+    "nodejs",
+    "heroku",
+    "whatsapp bot",
+    "wa bot",
+    "toxic-md"
+  ],
+  "scripts": {
+    "postdeploy": "echo 'Toxic-MD has been successfully deployed✅'"
+  },
+  "build": {
+    "languages": [
+      "nodejs"
+    ]
+  },
+  "env": {
+    "SESSION": {
+      "description": "🔑 مطلوب – معرّف جلسة WhatsApp الخاص بك (يُنشأ بعد ربط البوت).",
+      "required": true
+    },
+    "DEVICE": {
+      "description": "وضع الجهاز: android (افتراضي) أو ios. يستخدم Android أزرارًا تفاعلية، بينما يستخدم iOS ردودًا نصية فقط (لسببٍ ما). القيم المقبولة: android وios وdefault.",
+      "required": true,
+      "value": "default"
+    },
+    "HEROKU_APP_NAME": {
+      "description": "اختياري – اسم تطبيق Heroku الذي استخدمته (يلزم لتحديث البوت).",
+      "required": false
+    },
+    "HEROKU_API_KEY": {
+      "description": "اختياري – مفتاح Heroku API الخاص بك (لا يلزم إلا لتحديث البوت).",
+      "required": false
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "as": "DATABASE"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/clhuang/heroku-buildpack-webp-binaries.git"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-activestorage-preview"
+    }
+  ]
+}
